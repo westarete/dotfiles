@@ -2476,3 +2476,14 @@ __git_complete gitk __gitk_main
 if [ Cygwin = "$(uname -o 2>/dev/null)" ]; then
 __git_complete git.exe __git_main
 fi
+
+# Enable completion for user-defined aliases
+__git_complete gco _git_checkout
+__git_complete gd _git_diff
+__git_complete gl _git_log
+__git_complete gm _git_merge
+__git_complete gp _git_pull
+__git_complete gpo _git_pull
+__git_complete gP _git_push
+__git_complete gPo _git_push
+
