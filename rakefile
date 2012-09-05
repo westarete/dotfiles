@@ -1,0 +1,137 @@
+require 'net/ssh'
+
+
+desc "deploy site to (beta | staging | production)"
+task :deploy, :environment do | dp, args |
+  verifyChef
+  verifyEnvironment( args.environment )
+  exists = checkForExistingServer
+  if exists then
+    puts "exists"
+    checkForRoleUpdate(args.environment, exists)
+    pushNewRelease(args.environment, exists)
+  else
+    puts "not yet"
+    roleList = checkRequiredRoles
+    system "cd #{ENV['WESTARETE']}/chef-repo; knife server create -e #{args.environment} -n #{exists} -b Y -r #{roleList}"
+    exists = checkForExistingServer
+    (exists) ? pushNewRelease(args.environment, exists) : fail("error creating server.\n")
+  end
+end
+
+desc "usage. same as: rake"
+task :default do
+  puts "usage: rake deploy['ENVIRONMENT']\n\tex. rake deploy['beta']"
+end
+
+def pushNewRelease( environment, projectName )
+  print "deploying new site...."
+  host = environment + "." + projectName + ".westarete.com"
+  user = "deploy"
+  remote_path = "/var/www/sites/#{host}/releases/"
+  releaseTime = Time.new
+  releaseFolder = releaseTime.year.to_s + releaseTime.month.to_s + releaseTime.day.to_s + releaseTime.hour.to_s + releaseTime.min.to_s + releaseTime.sec.to_s
+  options = { :forward_agent => 'true' }
+  commands = [
+    "git clone git@github.com:westarete/#{projectName}.git #{releaseFolder}",
+    "rm /var/www/sites/#{host}/current",
+    "ln -s /var/www/sites/#{host}/releases/#{releaseFolder} current",
+    "sudo service apache2 restart"
+  ]
+  Net::SSH.start(host, user, options) do |ssh|
+    commands.each { |line| puts ssh.exec!(line) }
+    ssh.loop
+  end
+  puts "done!"
+end
+
+def checkForRoleUpdate( environment, projectName )
+  print "role-update?:\t"
+  nodeName = environment + "." + projectName + ".westarete.com"
+  currentRunList = `cd #{location}; knife node show #{nodeName}`.split("\n")[4]
+  newRunListPosition = (/[ ][ ]+(.*)/ =~ currentRoles)
+  newRunList = $1
+  oldRunList = checkRequiredRoles
+  if newRunList == oldRunList then
+    puts "NO"
+  else
+    puts "YES"
+    system %&cd #{location}; knife node run_list add #{nodeName} "#{newRunList}" &
+  end
+end
+
+
+def checkRequiredRoles
+  print "roles:\t\t"
+  roles = []
+  if ! File.exists?("Gemfile") then
+    print "no gemfile. assuming static site. role[webserver]"
+    roles << "role[webserver]"
+  else
+    gemfile = File.open("Gemfile", "r")
+    gemText = gemfile.read
+    rails = (/'rails'/ =~ gemText)
+    postgres = (/'pg'/ =~ gemText)
+    roles << (rails) ? "role[railsapp]" : nil
+    roles <<  (postgres) ? "recipe[postgre]" : nil
+    roles = roles.compact.join(", ")
+    puts roles
+  end
+end
+
+def checkForExistingServer( environment )
+  print "server:\t\t"
+  serverSet = `cd #{location}; knife client list 2> /dev/null`.split
+  projectName = ENV['PWD'].slice(ENV['PWD'].rindex('/')+1, ENV['PWD'].length)
+  deployServerName = environment + "." + projectName + ".westarete.com"
+  exists = serverSet.index(deployServerName) ? projectName : nil
+end
+
+def verifyChef
+  print "chef-repo:\t"
+  if ENV['WESTARETE'] then
+    if File.exists?("#{ENV['WESTARETE']}/chef-repo/") then 
+      puts "OK"
+      verifyKnifeInstallation( "#{ENV['WESTARETE']}/chef-repo/" )
+    else
+      fail("not found!\n Please clone/install the chef repo properly\n")
+    end
+  else
+    puts "not found!"
+    print "Would you like to set up your $WESTARETE environment variable temporarily? [Yn]: "
+    setUp = (/[yY]/ =~ STDIN.gets.strip)
+    (setUp) ? setUpWestAretePath : fail("Please set your $WESTARETE environment variable correctly\n")
+  end
+end
+
+def setUpWestAretePath
+  puts "enter the path to your westarete development folder:"
+  location = STDIN.gets.strip
+  location = (location[-1] == '/') ? location[0, location.length-1] : location
+  ENV['WESTARETE']= location
+  verifyChef
+end
+
+def verifyKnifeInstallation( location )
+  print "knife:\t\t"
+  currentLocale = ENV['PWD']
+  output = `cd #{location}; knife client list 2> /dev/null`
+  puts (/Check your configuration/ =~ output) ? fail("error!\nInstall knife properly.\n") : "OK"
+end
+
+
+def verifyEnvironment( purportedEnvironment )
+  environments = %w{ beta staging production }
+  print "environment:\t"
+  if environments.index( purportedEnvironment ) then
+    puts "#{purportedEnvironment}"
+  else
+    fail( "invalid! (beta, staging, production)\n" )
+  end
+end
+
+def fail( reason )
+  print "#{reason}"
+  exit 1
+end
+
