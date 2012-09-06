@@ -71,7 +71,7 @@ def checkRequiredRoles( environment, projectName)
   roles = []
   if ! File.exists?("#{ENV['WESTARETE']}/#{projectName}/Gemfile") then
     puts "failed!\t No local project gemfile found!"
-    puts "What roles/recipes would you like this project to have? [ie. 'role[webserver], recipe[postgre]' ]"
+    puts "What roles/recipes would you like this project to have? [ie. role[webserver], recipe[postgre] ]"
     inputRoles = STDIN.gets.strip.split(/[ ]*,[ ]*/)
     validateRoles( inputRoles )
     roles = inputRoles.join(", ")
