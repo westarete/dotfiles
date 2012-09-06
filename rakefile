@@ -2,7 +2,7 @@ require 'net/ssh'
 
 desc "usage. same as: rake"
 task :default do
-  puts "usage: rake deploy['ENVIRONMENT']\n\tex. rake deploy['beta']"
+  puts "usage: rake deploy[PROJECT,ENVIRONMENT]\n\tex. rake deploy[redi,beta] (!no spaces after comma!)"
 end
 
 desc "deploy site to (beta | staging | production)"
