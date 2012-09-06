@@ -1,28 +1,28 @@
 require 'net/ssh'
 
-
-desc "deploy site to (beta | staging | production)"
-task :deploy, :environment do | dp, args |
-  verifyChef
-  verifyEnvironment( args.environment )
-  exists = checkForExistingServer
-  if exists then
-    puts "exists"
-    checkForRoleUpdate(args.environment, exists)
-    pushNewRelease(args.environment, exists)
-  else
-    puts "not yet"
-    roleList = checkRequiredRoles
-    system "cd #{ENV['WESTARETE']}/chef-repo; knife server create -e #{args.environment} -n #{exists} -b Y -r #{roleList}"
-    exists = checkForExistingServer
-    (exists) ? pushNewRelease(args.environment, exists) : fail("error creating server.\n")
-  end
-end
-
 desc "usage. same as: rake"
 task :default do
   puts "usage: rake deploy['ENVIRONMENT']\n\tex. rake deploy['beta']"
 end
+
+desc "deploy site to (beta | staging | production)"
+task :deploy, :projectname, :environment do | dp, args |
+  verifyChef
+  verifyEnvironment( args[:environment] )
+  exists = checkForExistingServer( args[:environment], args[:projectname] )
+  if exists then
+    puts "exists"
+    checkForRoleUpdate(args[:environment], args[:projectname])
+    pushNewRelease(args[:environment], args[:projectname])
+  else
+    puts "not yet"
+    roleList = checkRequiredRoles(args[:environment], args[:projectname])
+    system "cd #{ENV['WESTARETE']}/chef-repo; knife server create -e #{args[:environment]} -n #{args[:projectname]} -b Y -r #{roleList}"
+    exists = checkForExistingServer
+    (exists) ? pushNewRelease(args[:environment], args[:projectname]) : fail("error creating server.\n")
+  end
+end
+
 
 def pushNewRelease( environment, projectName )
   print "deploying new site...."
@@ -48,28 +48,32 @@ end
 def checkForRoleUpdate( environment, projectName )
   print "role-update?:\t"
   nodeName = environment + "." + projectName + ".westarete.com"
-  currentRunList = `cd #{location}; knife node show #{nodeName}`.split("\n")[4]
+  currentRunList = `cd #{ENV['WESTARETE']/chef-repo}; knife node show #{nodeName}`.split("\n")[4]
   newRunListPosition = (/[ ][ ]+(.*)/ =~ currentRoles)
   newRunList = $1
-  oldRunList = checkRequiredRoles
+  oldRunList = checkRequiredRoles( environment, projectName )
   if newRunList == oldRunList then
     puts "NO"
   else
     puts "YES"
-    system %&cd #{location}; knife node run_list add #{nodeName} "#{newRunList}" &
+    system %&cd #{ENV['WESTARETE']/chef-repo}; knife node run_list add #{nodeName} "#{newRunList}" &
   end
 end
 
-
-def checkRequiredRoles
-  print "roles:\t\t"
+def checkRequiredRoles( environment, projectName)
+  print "roles:\t\tsearching..."
   roles = []
-  if ! File.exists?("Gemfile") then
-    print "no gemfile. assuming static site. role[webserver]"
-    roles << "role[webserver]"
+  if ! File.exists?("#{ENV['WESTARETE']}/#{projectName}/Gemfile") then
+    puts "failed!\t No local project gemfile found!"
+    puts "What roles/recipes would you like this project to have? [ie. 'role[webserver], recipe[postgre]' ]"
+    inputRoles = STDIN.gets.strip.split(/[ ]*,[ ]*/)
+    validateRoles( inputRoles )
+    roles = inputRoles.join(", ")
   else
+    puts "found gemfile. using: "
     gemfile = File.open("Gemfile", "r")
     gemText = gemfile.read
+    gemfile.close
     rails = (/'rails'/ =~ gemText)
     postgres = (/'pg'/ =~ gemText)
     roles << (rails) ? "role[railsapp]" : nil
@@ -77,22 +81,54 @@ def checkRequiredRoles
     roles = roles.compact.join(", ")
     puts roles
   end
+  roles
 end
 
-def checkForExistingServer( environment )
+def validateRoles( roleList )
+  print "validating roles..."
+  availableRoles = `cd #{ENV['WESTARETE']/chef-repo}; knife role list`.split
+  availableRecipes = `cd #{ENV['WESTARETE']/chef-repo}; knife cookbook list`.split("\n")
+  roleList.each do |item|
+    if( item.index('role') != nil ) then
+      /[ ]*role\[(.*)\]/ =~ item
+      name = $1
+      if availableRoles.index(name) == nil then
+        puts "failed!"
+        fail("\t invalid role supplied. Available roles are:\n #{availableRoles}")
+      end
+    elsif (item.index('recipe') != nil ) then
+      /[ ]*recipe\[(.*)\]/ =~ item
+      name = $1
+      index = nil
+      availableRecipes.each do |avR|
+        if avR.index(name) != nil then
+          index = 'found'
+        end
+      end
+      if index == nil then
+        puts "failed!"
+        fail( "\t invalid recipe supplied. Available recipes (ignore version numbers) are:\n #{availableRecipes}" )
+      end
+    else
+      puts "failed!"
+      fail( "invalid role/recipe in the role list provided.\nAvailable roles:\n#{availableRoles}\nAvailable recipes:\n#{availableRecipes}" )
+    end
+  end
+end
+
+def checkForExistingServer( environment, projectName )
   print "server:\t\t"
-  serverSet = `cd #{location}; knife client list 2> /dev/null`.split
-  projectName = ENV['PWD'].slice(ENV['PWD'].rindex('/')+1, ENV['PWD'].length)
+  serverSet = `cd #{ENV['WESTARETE']/chef-repo}; knife client list 2> /dev/null`.split
   deployServerName = environment + "." + projectName + ".westarete.com"
-  exists = serverSet.index(deployServerName) ? projectName : nil
+  exists = serverSet.index(deployServerName)
 end
 
 def verifyChef
   print "chef-repo:\t"
   if ENV['WESTARETE'] then
-    if File.exists?("#{ENV['WESTARETE']}/chef-repo/") then 
+    if File.exists?("#{ENV['WESTARETE']}/chef-repo") then 
       puts "OK"
-      verifyKnifeInstallation( "#{ENV['WESTARETE']}/chef-repo/" )
+      verifyKnifeInstallation( "#{ENV['WESTARETE']}/chef-repo" )
     else
       fail("not found!\n Please clone/install the chef repo properly\n")
     end
@@ -134,4 +170,3 @@ def fail( reason )
   print "#{reason}"
   exit 1
 end
-
