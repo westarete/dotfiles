@@ -123,7 +123,7 @@ end
 
 def checkForExistingServer( environment, projectName )
   print "server:\t\t"
-  serverSet = `cd #{ENV['WESTARETE']/chef-repo}; knife client list 2> /dev/null`.split
+  serverSet = `cd #{ENV['WESTARETE']}/chef-repo; knife client list 2> /dev/null`.split
   deployServerName = environment + "." + projectName + ".westarete.com"
   exists = serverSet.index(deployServerName)
 end
