@@ -93,33 +93,26 @@ end
 def validateRoles( roleList )
   print "validating roles..."
   availableRoles = `cd #{ENV['WESTARETE']}/chef-repo; knife role list`.split
-  availableRecipes = `cd #{ENV['WESTARETE']}/chef-repo; knife cookbook list`.split("\n")
+  availableRecipes = `cd #{ENV['WESTARETE']}/chef-repo; knife cookbook list`.split("\n").collect! {|x| x.match(/[a-zA-Z\-]+/)[0]}
   roleList.each do |item|
     if( item.index('role') != nil ) then
       /[ ]*role\[(.*)\]/ =~ item
       name = $1
       if availableRoles.index(name) == nil then
         puts "failed!"
-        fail("\t invalid role supplied. Available roles are:\n #{availableRoles}")
+        fail("\t invalid role supplied. Available roles are:\n #{availableRoles}\n")
       end
     elsif (item.index('recipe') != nil ) then
       /[ ]*recipe\[(.*)\]/ =~ item
       name = $1
       index = nil
-      availableRecipes.each do |avR|
-        /[ ]*recipe\[(.*)\]/ =~ avR
-        availableRecipeName = $1
-        if name == availableRecipeName then
-          index = 'found'
-        end
-      end
-      if index == nil then
+      if availableRecipes.index(name) == nil then
         puts "failed!"
-        fail( "\t invalid recipe supplied. Available recipes (ignore version numbers) are:\n #{availableRecipes}" )
+        fail( "\t invalid recipe supplied. Available recipes (ignore version numbers) are:\n #{availableRecipes}\n" )
       end
     else
       puts "failed!"
-      fail( "invalid role/recipe in the role list provided.\nAvailable roles:\n#{availableRoles}\nAvailable recipes:\n#{availableRecipes}" )
+      fail( "invalid role/recipe in the role list provided.\nAvailable roles:\n#{availableRoles}\nAvailable recipes:\n#{availableRecipes}\n" )
     end
   end
   puts "success!"
