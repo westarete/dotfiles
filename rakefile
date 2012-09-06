@@ -17,9 +17,10 @@ task :deploy, :projectname, :environment do | dp, args |
   else
     puts "not yet"
     roleList = checkRequiredRoles(args[:environment], args[:projectname])
-    system "cd #{ENV['WESTARETE']}/chef-repo; knife server create -e #{args[:environment]} -n #{args[:projectname]} -b Y -r #{roleList}"
-    exists = checkForExistingServer
-    (exists) ? pushNewRelease(args[:environment], args[:projectname]) : fail("error creating server.\n")
+    puts "\'#{roleList}\'"
+    # system "cd #{ENV['WESTARETE']}/chef-repo; knife server create -e #{args[:environment]} -n #{args[:projectname]} -b Y -r \'#{roleList}\'"
+    # exists = checkForExistingServer
+    # (exists) ? pushNewRelease(args[:environment], args[:projectname]) : fail("error creating server.\n")
   end
 end
 
@@ -119,6 +120,7 @@ def validateRoles( roleList )
       fail( "invalid role/recipe in the role list provided.\nAvailable roles:\n#{availableRoles}\nAvailable recipes:\n#{availableRecipes}" )
     end
   end
+  puts "success!"
 end
 
 def checkForExistingServer( environment, projectName )
