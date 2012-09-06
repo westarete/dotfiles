@@ -25,7 +25,7 @@ end
 
 desc "destroy a site's server"
 task :destroy, :projectname, :environment do |ds, args|
-  `cd #{ENV['WESTARETE']/chef-repo}; knife server destroy -h "#{args[:environment] + '.' + args[:projectname] + '.westarete.com'}"`
+  `cd #{ENV['WESTARETE']}/chef-repo; knife server destroy -h "#{args[:environment] + '.' + args[:projectname] + '.westarete.com'}"`
 end
 
 
@@ -53,7 +53,7 @@ end
 def checkForRoleUpdate( environment, projectName )
   print "role-update?:\t"
   nodeName = environment + "." + projectName + ".westarete.com"
-  currentRunList = `cd #{ENV['WESTARETE']/chef-repo}; knife node show #{nodeName}`.split("\n")[4]
+  currentRunList = `cd #{ENV['WESTARETE']}/chef-repo; knife node show #{nodeName}`.split("\n")[4]
   newRunListPosition = (/[ ][ ]+(.*)/ =~ currentRoles)
   newRunList = $1
   oldRunList = checkRequiredRoles( environment, projectName )
@@ -61,7 +61,7 @@ def checkForRoleUpdate( environment, projectName )
     puts "NO"
   else
     puts "YES"
-    system %&cd #{ENV['WESTARETE']/chef-repo}; knife node run_list add #{nodeName} "#{newRunList}" &
+    system %&cd #{ENV['WESTARETE']}/chef-repo; knife node run_list add #{nodeName} "#{newRunList}" &
   end
 end
 
@@ -91,8 +91,8 @@ end
 
 def validateRoles( roleList )
   print "validating roles..."
-  availableRoles = `cd #{ENV['WESTARETE']/chef-repo}; knife role list`.split
-  availableRecipes = `cd #{ENV['WESTARETE']/chef-repo}; knife cookbook list`.split("\n")
+  availableRoles = `cd #{ENV['WESTARETE']}/chef-repo; knife role list`.split
+  availableRecipes = `cd #{ENV['WESTARETE']}/chef-repo; knife cookbook list`.split("\n")
   roleList.each do |item|
     if( item.index('role') != nil ) then
       /[ ]*role\[(.*)\]/ =~ item
