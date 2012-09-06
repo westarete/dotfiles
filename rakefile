@@ -18,9 +18,9 @@ task :deploy, :projectname, :environment do | dp, args |
     puts "not yet"
     roleList = checkRequiredRoles(args[:environment], args[:projectname])
     puts "\'#{roleList}\'"
-    # system "cd #{ENV['WESTARETE']}/chef-repo; knife server create -e #{args[:environment]} -n #{args[:projectname]} -b Y -r \'#{roleList}\'"
-    # exists = checkForExistingServer
-    # (exists) ? pushNewRelease(args[:environment], args[:projectname]) : fail("error creating server.\n")
+    system "cd #{ENV['WESTARETE']}/chef-repo; knife server create -e #{args[:environment]} -n #{args[:projectname]} -b Y -r \'#{roleList}\'"
+    exists = checkForExistingServer
+    (exists) ? pushNewRelease(args[:environment], args[:projectname]) : fail("error creating server.\n")
   end
 end
 
