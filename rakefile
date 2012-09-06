@@ -26,7 +26,7 @@ end
 
 desc "destroy a site's server"
 task :destroy, :projectname, :environment do |ds, args|
-  `cd #{ENV['WESTARETE']}/chef-repo; knife server destroy -h "#{args[:environment] + '.' + args[:projectname] + '.westarete.com'}"`
+  system %& cd #{ENV['WESTARETE']}/chef-repo; knife server destroy -h "#{args[:environment] + '.' + args[:projectname] + '.westarete.com'}" &
 end
 
 
@@ -108,7 +108,7 @@ def validateRoles( roleList )
       index = nil
       if availableRecipes.index(name) == nil then
         puts "failed!"
-        fail( "\t invalid recipe supplied. Available recipes (ignore version numbers) are:\n #{availableRecipes}\n" )
+        fail( "\t invalid recipe supplied. Available recipes are:\n #{availableRecipes}\n" )
       end
     else
       puts "failed!"
