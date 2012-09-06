@@ -2,7 +2,7 @@ require 'net/ssh'
 
 desc "usage. same as: rake"
 task :default do
-  puts "usage: rake deploy[PROJECT,ENVIRONMENT]\n\tex. rake deploy[redi,beta] (!no spaces after comma!)"
+system "rake -T"
 end
 
 desc "deploy site to (beta | staging | production)"
@@ -21,6 +21,11 @@ task :deploy, :projectname, :environment do | dp, args |
     exists = checkForExistingServer
     (exists) ? pushNewRelease(args[:environment], args[:projectname]) : fail("error creating server.\n")
   end
+end
+
+desc "destroy a site's server"
+task :destroy, :projectname, :environment do |ds, args|
+  `cd #{ENV['WESTARETE']/chef-repo}; knife server destroy -h "#{args[:environment] + '.' + args[:projectname] + '.westarete.com'}"`
 end
 
 
