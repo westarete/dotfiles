@@ -26,7 +26,18 @@ end
 
 desc "destroy a site's server"
 task :destroy, :projectname, :environment do |ds, args|
+  puts "Are you sure you want to delete < #{args[:environment] + '.' + args[:projectname] + '.westarete.com'} >"
   system %& cd #{ENV['WESTARETE']}/chef-repo; knife server destroy -h "#{args[:environment] + '.' + args[:projectname] + '.westarete.com'}" &
+end
+
+desc "list all chef-ed servers and roles"
+task :list do |l|
+  nodeList = `cd #{ENV['WESTARETE']}/chef-repo; knife node list`.split
+  nodeList.each do |node|
+    nodeInfo = `cd #{ENV['WESTARETE']}/chef-repo; knife node show #{node}`.split("\n")
+    nodeInfo = (nodeInfo.collect! { |r| r.scan(/[a-zA-Z.0-9\-]*$|\[[a-zA-Z\-]*\]/).join }).slice(0,5)
+    print nodeInfo.join("\n\t"), "\n\n"
+  end
 end
 
 
