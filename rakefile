@@ -73,7 +73,7 @@ def checkRequiredRoles( environment, projectName)
     puts "failed!\t No local project gemfile found!"
     puts "What roles/recipes would you like this project to have? [ie. role[webserver], recipe[postgre] ]"
     inputRoles = STDIN.gets.strip.split(/[ ]*,[ ]*/)
-    validateRoles( inputRoles )
+    verifyRoles( inputRoles )
     roles = inputRoles.join(", ")
   else
     puts "found gemfile. using: "
@@ -90,8 +90,8 @@ def checkRequiredRoles( environment, projectName)
   roles
 end
 
-def validateRoles( roleList )
-  print "validating roles..."
+def verifyRoles( roleList )
+  print "verifying roles..."
   availableRoles = `cd #{ENV['WESTARETE']}/chef-repo; knife role list`.split
   availableRecipes = `cd #{ENV['WESTARETE']}/chef-repo; knife cookbook list`.split("\n").collect! {|x| x.match(/[a-zA-Z\-]+/)[0]}
   roleList.each do |item|
