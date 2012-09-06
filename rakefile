@@ -107,7 +107,9 @@ def validateRoles( roleList )
       name = $1
       index = nil
       availableRecipes.each do |avR|
-        if avR.index(name) != nil then
+        /[ ]*recipe\[(.*)\]/ =~ avR
+        availableRecipeName = $1
+        if name == availableRecipeName then
           index = 'found'
         end
       end
