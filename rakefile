@@ -7,13 +7,14 @@ end
 
 desc "deploy site to (beta | staging | production)"
 task :deploy, [:projectname, :environment] => :verifyChef do | dp, args |
+  (args[:projectname] and args[:environment]) ? nil : (puts "Incorrect arguments.\n #{Rake::Task['default'].invoke}\n#{fail(color("fail!\n", 'red'))}")
   verifyEnvironment( args[:environment] )
-  /(([a-zA-Z0-9]+[.]{0,1})+[a-zA-Z0-9]*)+[.](org|com|net)*$/ =~ args[:projectname]
+  /(([a-zA-Z0-9\-]+[.]{0,1})+[a-zA-Z0-9\-]*)+[.](org|com|net)*$/ =~ args[:projectname]
   cleanedProjectName = $1
   exists = checkForExistingServer( args[:environment], cleanedProjectName )
   if exists then
     puts color('exists', 'green')
-    checkForRoleUpdate(args[:environment], cleanedProjectName)
+    #checkForRoleUpdate(args[:environment], cleanedProjectName)
     pushNewRelease(args[:environment], cleanedProjectName, args[:projectname])
   else
     puts color('not yet', 'yellow')
@@ -188,7 +189,7 @@ def verifyEnvironment( purportedEnvironment )
 end
 
 def fail( reason )
-  print "#{reason}"
+  print reason
   exit 1
 end
 
