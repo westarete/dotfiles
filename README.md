@@ -25,7 +25,7 @@ example: `rake deploy[redi,beta]` or `rake destroy[prometheus,staging]`
 
 Notes on the arguments: 
 
-* rake is a really particular tool. DO NOT PUT SPACES AFTER COMMAS. bad: `rake deploy[redi, staging]` -> good: `rake deploy[redi,staging]
+* rake is a really particular tool. DO NOT PUT SPACES AFTER COMMAS. bad: `rake deploy[redi, staging]` -> good: `rake deploy[redi,staging]`
 * `projectname` - this is the actual github project name [ex: centre-foundation.org or redi or admin.thepilgrimage.org ]
 * `environment` - this is one of {beta, staging, production}
 
