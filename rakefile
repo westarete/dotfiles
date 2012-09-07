@@ -7,22 +7,21 @@ end
 
 desc "deploy site to (beta | staging | production)"
 task :deploy, [:projectname, :environment] => :verifyChef do | dp, args |
-  verifyChef
   verifyEnvironment( args[:environment] )
-  /([a-zA-Z0-9]+[.]{0,1}[a-zA-Z0-9]*)+[.](org|com|net)*$/ =~ args[:projectname]
+  /(([a-zA-Z0-9]+[.]{0,1})+[a-zA-Z0-9]*)+[.](org|com|net)*$/ =~ args[:projectname]
   cleanedProjectName = $1
-  exists = checkForExistingServer( args[:environment], args[:projectname] )
+  exists = checkForExistingServer( args[:environment], cleanedProjectName )
   if exists then
     puts color('exists', 'green')
-    checkForRoleUpdate(args[:environment], args[:projectname])
-    pushNewRelease(args[:environment], args[:projectname])
+    checkForRoleUpdate(args[:environment], cleanedProjectName)
+    pushNewRelease(args[:environment], cleanedProjectName, args[:projectname])
   else
     puts color('not yet', 'yellow')
-    roleList = checkRequiredRoles(args[:environment], args[:projectname])
+    roleList = checkRequiredRoles(args[:environment], cleanedProjectName)
     puts "\'#{roleList}\'"
-    system "cd #{ENV['WESTARETE']}/chef-repo; knife server create -e #{args[:environment]} -n #{args[:projectname]} -b Y -r \'#{roleList}\'"
-    exists = checkForExistingServer( args[:environment], args[:projectname] )
-    (exists) ? pushNewRelease(args[:environment], args[:projectname]) : fail(color("error creating server.\n", 'red'))
+    system "cd #{ENV['WESTARETE']}/chef-repo; knife server create -e #{args[:environment]} -n #{cleanedProjectName} -b Y -r \'#{roleList}\'"
+    exists = checkForExistingServer( args[:environment], cleanedProjectName )
+    (exists) ? pushNewRelease(args[:environment], cleanedProjectName, args[:projectname]) : fail(color("error creating server.\n", 'red'))
   end
 end
 
@@ -65,7 +64,7 @@ task :verifyChef do
   end
 end
 
-def pushNewRelease( environment, projectName )
+def pushNewRelease( environment, projectName, githubName )
   puts "deploying new site...."
   host = environment + "." + projectName + ".westarete.com"
   user = "deploy"
@@ -75,8 +74,8 @@ def pushNewRelease( environment, projectName )
   options = { :forward_agent => true }
   commands = [
     "ssh -T -o StrictHostKeyChecking=no git@github.com",
-    "git clone git@github.com:westarete/#{projectName}.git #{remote_path}/releases/#{releaseFolder}",
-    "if [-f #{remote_path}/current ]; then rm #{remote_path}/current; fi",
+    "git clone git@github.com:westarete/#{githubName}.git #{remote_path}/releases/#{releaseFolder}",
+    "if [ -f #{remote_path}/current ]; then rm #{remote_path}/current; fi",
     "ln -s #{remote_path}/releases/#{releaseFolder} #{remote_path}/current",
     "cd #{remote_path}/releases/#{releaseFolder}/; bundle install --without production",
     "sudo service apache2 restart"
@@ -107,7 +106,7 @@ def checkRequiredRoles( environment, projectName)
   print "roles:\t\tsearching..."
   roles = []
   if ! File.exists?("#{ENV['WESTARETE']}/#{projectName}/Gemfile") then
-    puts color("failed!", "red"), "\t No local project gemfile found!"
+    puts color("failed!", "yellow"), "\t No local project gemfile found!"
     puts "What roles/recipes would you like this project to have? [ie. role[webserver], recipe[postgre] ]"
     inputRoles = STDIN.gets.strip.split(/[ ]*,[ ]*/)
     verifyRoles( inputRoles )
@@ -167,7 +166,7 @@ def setUpWestAretePath
   location = STDIN.gets.strip
   location = (location[-1] == '/') ? location[0, location.length-1] : location
   ENV['WESTARETE']= location
-  verifyChef
+  Rake::Task["verifyChef"].invoke
 end
 
 def verifyKnifeInstallation( location )
