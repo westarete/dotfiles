@@ -29,11 +29,12 @@ end
 desc "destroy a site's server"
 task :destroy, [:projectname, :environment] => :verifyChef do |ds, args|
   /(([a-zA-Z0-9\-]+[.]{0,1})+[a-zA-Z0-9\-]*)+[.](org|com|net)*$/ =~ args[:projectname]
-  cleanedProjectName = $1
-  puts "Are you sure you want to delete < #{args[:environment] + '.' + cleanedProjectName + '.westarete.com'} >? [Yn]"
+  cleanedProjectName = $
+  cleanedHost = args[:environment] + '.' + cleanedProjectName + '.westarete.com'
+  puts "Are you sure you want to delete < #{cleanedHost} >? [Yn]"
   sure = STDIN.gets.strip
   if /[yY]([eE][sS])*/ =~ sure then
-    system %& cd #{ENV['WESTARETE']}/chef-repo; knife server destroy -h "#{args[:environment] + '.' + args[:projectname] + '.westarete.com'}" &
+    system %& cd #{ENV['WESTARETE']}/chef-repo; knife server destroy -h \'#{cleanedHost}\' &
   else
     puts "site preserved."
   end
