@@ -26,8 +26,13 @@ end
 
 desc "destroy a site's server"
 task :destroy, :projectname, :environment do |ds, args|
-  puts "Are you sure you want to delete < #{args[:environment] + '.' + args[:projectname] + '.westarete.com'} >"
-  system %& cd #{ENV['WESTARETE']}/chef-repo; knife server destroy -h "#{args[:environment] + '.' + args[:projectname] + '.westarete.com'}" &
+  puts "Are you sure you want to delete < #{args[:environment] + '.' + args[:projectname] + '.westarete.com'} >? [Yn]"
+  sure = STDIN.gets.strip
+  if /[yY]([eE][sS])*/ =~ sure then
+    system %& cd #{ENV['WESTARETE']}/chef-repo; knife server destroy -h "#{args[:environment] + '.' + args[:projectname] + '.westarete.com'}" &
+  else
+    puts "site preserved."
+  end
 end
 
 desc "list all chef-ed servers and roles"
@@ -45,14 +50,15 @@ def pushNewRelease( environment, projectName )
   print "deploying new site...."
   host = environment + "." + projectName + ".westarete.com"
   user = "deploy"
-  remote_path = "/var/www/sites/#{host}/releases/"
+  remote_path = "/var/www/sites/#{host}/releases"
   releaseTime = Time.new
   releaseFolder = releaseTime.year.to_s + releaseTime.month.to_s + releaseTime.day.to_s + releaseTime.hour.to_s + releaseTime.min.to_s + releaseTime.sec.to_s
-  options = { :forward_agent => 'true' }
+  options = { :forward_agent => true }
   commands = [
-    "git clone git@github.com:westarete/#{projectName}.git #{releaseFolder}",
-    "rm /var/www/sites/#{host}/current",
-    "ln -s /var/www/sites/#{host}/releases/#{releaseFolder} current",
+    "git clone git@github.com:westarete/#{projectName}.git #{remote_path}/#{releaseFolder}",
+    "if [-f /var/www/sites/#{host}/current ]; then rm /var/www/sites/#{host}/current; fi",
+    "ln -s /var/www/sites/#{host}/releases/#{releaseFolder} /var/www/sites/#{host}/current",
+    "cd /var/www/sites/#{host}/releases/#{releaseFolder}/; bundle install",
     "sudo service apache2 restart"
   ]
   Net::SSH.start(host, user, options) do |ssh|
@@ -66,7 +72,7 @@ def checkForRoleUpdate( environment, projectName )
   print "role-update?:\t"
   nodeName = environment + "." + projectName + ".westarete.com"
   currentRunList = `cd #{ENV['WESTARETE']}/chef-repo; knife node show #{nodeName}`.split("\n")[4]
-  newRunListPosition = (/[ ][ ]+(.*)/ =~ currentRoles)
+  newRunListPosition = (/[ ][ ]+(.*)/ =~ currentRunList)
   newRunList = $1
   oldRunList = checkRequiredRoles( environment, projectName )
   if newRunList == oldRunList then
