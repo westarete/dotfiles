@@ -57,15 +57,14 @@ Checks for a server and will create if none is found. If it doesn't exist it wil
 * a php site: `role[phpsite]`
 * a static page: `role[webserver]`
 Once you've entered the roles you want (or not if the server already exists), the hard work is done! It will deploy the site properly the capistrano way. It will say "done" when it is all deployed.
-Example: `rake deploy[redi,beta]` with roles `role[railsapp], recipe[postgre]` or `rake deploy[pasubway.com,beta]` with roles `role[webserver]`
-
+* Example: `rake deploy[redi,beta]` with roles `role[railsapp], recipe[postgre]` or `rake deploy[pasubway.com,beta]` with roles `role[webserver]`
 
 Destroy a server for a project:
 -------------------------------
 Will ask you if you are sure, then destroy the server and its dns records. Very simple, maybe too simple?
-Example: `rake destroy[redi,beta]`, `rake destroy[secureport,staging]`
+* Example: `rake destroy[redi,beta]`, `rake destroy[secureport,staging]`
 
 List all servers:
 -----------------
 Will list all the servers that have been deployed using this rake tool, or via chef. It will also display their IPs and their role lists.
-Example: `rake list`
+* Example: `rake list`
