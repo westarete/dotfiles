@@ -29,7 +29,7 @@ end
 desc "destroy a site's server"
 task :destroy, [:projectname, :environment] => :verifyChef do |ds, args|
   /(([a-zA-Z0-9\-]+[.]{0,1})+[a-zA-Z0-9\-]*)+[.](org|com|net)*$/ =~ args[:projectname]
-  cleanedProjectName = $
+  cleanedProjectName = $1
   cleanedHost = args[:environment] + '.' + cleanedProjectName + '.westarete.com'
   puts "Are you sure you want to delete < #{cleanedHost} >? [Yn]"
   sure = STDIN.gets.strip
