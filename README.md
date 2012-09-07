@@ -50,7 +50,8 @@ Rakefile usage
 
 There is no need to use the `verifyChef` rake task. It is automatically called by every other task as a dependency.
 
->> Deploy a project (new or already existing):
+Deploy a project (new or already existing):
+-------------------------------------------
 Checks for a server and will create if none is found. If it doesn't exist it will ask you interactively what roles you would like to provide for the server. You must enter some roles or recipes when it asks.
 * for a rails app: `role[railsapp]` with postgre: `role[railsapp], recipe[postgre]`
 * a php site: `role[phpsite]`
@@ -59,10 +60,12 @@ Once you've entered the roles you want (or not if the server already exists), th
 Example: `rake deploy[redi,beta]` with roles `role[railsapp], recipe[postgre]` or `rake deploy[pasubway.com,beta]` with roles `role[webserver]`
 
 
->> Destroy a server for a project:
+Destroy a server for a project:
+-------------------------------
 Will ask you if you are sure, then destroy the server and its dns records. Very simple, maybe too simple?
 Example: `rake destroy[redi,beta]`, `rake destroy[secureport,staging]`
 
->> List all servers:
+List all servers:
+-----------------
 Will list all the servers that have been deployed using this rake tool, or via chef. It will also display their IPs and their role lists.
 Example: `rake list`
