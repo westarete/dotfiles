@@ -9,7 +9,8 @@ They're named here without the leading dot, so that the repository is easy to
 work with. You'll need to rename them e.g. from `gemrc` to `~/.gemrc` when you
 install them.
 
-# Rakefile Semantics
+Rakefile Semantics
+==================
 
 This rakefile is what is used to do all sorts of deploy related things. The available options are:
 
@@ -28,7 +29,8 @@ Notes on the arguments:
 * `projectname` - this is the actual github project name [ex: centre-foundation.org or redi or admin.thepilgrimage.org ]
 * `environment` - this is one of {beta, staging, production}
 
-# Rakefile Setup
+Rakefile Setup
+==============
 
 The rake file is quite robust, but there are some specifics about locations and naming that are important. Here is an idea of the proper usage, what to expect and just enough about how things work to guarantee you'll have a good time.
 
@@ -40,7 +42,8 @@ The rake file is quite robust, but there are some specifics about locations and 
 `export WESTARETE=path/to/westarete/directory/`
 To do this permanently, you must add the prior command to your `/etc/profile` text file. It doesn't matter where in the file (top or bottom). You will need to restart your terminal to see the effects.
 
-# Rakefile usage:
+Rakefile usage
+==============
 
 There is no need to use the `verifyChef` rake task. It is automatically called by every other task as a dependency.
 
@@ -53,10 +56,10 @@ Once you've entered the roles you want (or not if the server already exists), th
 Example: `rake deploy[redi,beta]` with roles `role[railsapp], recipe[postgre]` or `rake deploy[pasubway.com,beta]` with roles `role[webserver]`
 
 
-Destroy a server for a project 
+Destroy a server for a project:
 Will ask you if you are sure, then destroy the server and its dns records. Very simple, maybe too simple?
 Example: `rake destroy[redi,beta]`, `rake destroy[secureport,staging]`
 
-* list all servers - `rake list`
+List all servers:
 Will list all the servers that have been deployed using this rake tool, or via chef. It will also display their IPs and their role lists.
 Example: `rake list`
