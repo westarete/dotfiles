@@ -37,10 +37,13 @@ The rake file is quite robust, but there are some specifics about locations and 
 1. There is an expectation that you have a "westarete" directory that will contain chef (and possibly other projects). It doesn't need to be named anything specifically, but it must exist and be where you install chef. (^)
 2. You must have chef installed. See the chef-repo for how to do that. Do this in your "westarete" (or any name) directory.
 3. You must clone this repo also into your "westarete" directory.
+* `git clone git@github.com:westarete/dotfiles.git your/westarete/directory/path/`
+* `cd your/westarete/directory/path/dotfiles/`
+* `git checkout anatraj`
 
 (^) Optional: You can save yourself one line of questioning and typing in the rake task by setting an environment variable for the path to your "westarete" directory. To do this for just one session inside the terminal, 
 `export WESTARETE=path/to/westarete/directory/`
-To do this permanently, you must add the prior command to your `/etc/profile` text file. It doesn't matter where in the file (top or bottom). You will need to restart your terminal to see the effects.
+To do this permanently, you must add the prior command to your `/etc/profile` text file. It doesn't matter where in the file (top or bottom). You will need to restart your terminal to see the effects. To test if it worked, `echo $WESTARETE` should print the path.
 
 Rakefile usage
 ==============
