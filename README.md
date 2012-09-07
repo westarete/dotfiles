@@ -35,7 +35,7 @@ Rakefile Setup
 The rake file is quite robust, but there are some specifics about locations and naming that are important. Here is an idea of the proper usage, what to expect and just enough about how things work to guarantee you'll have a good time.
 
 1. There is an expectation that you have a "westarete" directory that will contain chef (and possibly other projects). It doesn't need to be named anything specifically, but it must exist and be where you install chef. (^)
-2. You must have chef installed. See the chef-repo for how to do that. Do this in your "westarete" (or any name) directory.
+2. You must have chef installed. See the chef-repo for how to do that. Do this in your "westarete" directory.
 3. You must clone this repo also into your "westarete" directory.
 * `git clone git@github.com:westarete/dotfiles.git your/westarete/directory/path/`
 * `cd your/westarete/directory/path/dotfiles/`
