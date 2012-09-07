@@ -56,7 +56,7 @@ Checks for a server and will create if none is found. If it doesn't exist it wil
 * for a rails app: `role[railsapp]` with postgre: `role[railsapp], recipe[postgre]`
 * a php site: `role[phpsite]`
 * a static page: `role[webserver]`
-Once you've entered the roles you want (or not if the server already exists), the hard work is done! It will deploy the site properly the capistrano way. It will say "done" when it is all deployed.
+* Once you've entered the roles you want (or not if the server already exists), the hard work is done! It will deploy the site properly the capistrano way. It will say "done" when it is all deployed.
 * Example: `rake deploy[redi,beta]` with roles `role[railsapp], recipe[postgre]` or `rake deploy[pasubway.com,beta]` with roles `role[webserver]`
 
 Destroy a server for a project:
