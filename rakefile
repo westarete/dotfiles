@@ -9,6 +9,8 @@ desc "deploy site to (beta | staging | production)"
 task :deploy, [:projectname, :environment] => :verifyChef do | dp, args |
   verifyChef
   verifyEnvironment( args[:environment] )
+  /([a-zA-Z0-9]+[.]{0,1}[a-zA-Z0-9]*)+[.](org|com|net)*$/ =~ args[:projectname]
+  cleanedProjectName = $1
   exists = checkForExistingServer( args[:environment], args[:projectname] )
   if exists then
     puts color('exists', 'green')
@@ -36,20 +38,16 @@ task :destroy, [:projectname, :environment] => :verifyChef do |ds, args|
 end
 
 desc "list all chef-ed servers and roles"
-task :list => :verifyChef do |l, args|
+task :list => :verifyChef do |l|
   nodeList = `cd #{ENV['WESTARETE']}/chef-repo; knife node list`.split
-  nodeSet = []
   nodeList.each do |node|
     nodeInfo = `cd #{ENV['WESTARETE']}/chef-repo; knife node show #{node}`.split("\n")
     nodeInfo = (nodeInfo.collect! { |r| r.scan(/[a-zA-Z.0-9\-]*$|\[[a-zA-Z\-]*\]/).join }).slice(0,5)
-    #print nodeInfo.join("\n\t"), "\n\n"
-    nodeSet << nodeInfo
+    print nodeInfo.join("\n\t"), "\n\n"
   end
-  m = nodeSet.map { |_| _.length }
-  nodeSet.each { |_| _.each_with_index { |e, i| s = e.size; m[i] = s if s > m[i] } }
-  nodeSet.each { |x| puts m.map { |_| "%#{_}s" }.join(" " * 5) % x }
 end
 
+desc "verify that chef is correctly installed and operational"
 task :verifyChef do
   print "chef-repo:\t"
   if ENV['WESTARETE'] then
@@ -71,15 +69,16 @@ def pushNewRelease( environment, projectName )
   puts "deploying new site...."
   host = environment + "." + projectName + ".westarete.com"
   user = "deploy"
-  remote_path = "/var/www/sites/#{host}/releases"
+  remote_path = "/var/www/sites/#{host}"
   releaseTime = Time.new
   releaseFolder = releaseTime.year.to_s + releaseTime.month.to_s + releaseTime.day.to_s + releaseTime.hour.to_s + releaseTime.min.to_s + releaseTime.sec.to_s
   options = { :forward_agent => true }
   commands = [
-    "git clone git@github.com:westarete/#{projectName}.git #{remote_path}/#{releaseFolder}",
-    "if [-f /var/www/sites/#{host}/current ]; then rm /var/www/sites/#{host}/current; fi",
-    "ln -s /var/www/sites/#{host}/releases/#{releaseFolder} /var/www/sites/#{host}/current",
-    "cd /var/www/sites/#{host}/releases/#{releaseFolder}/; bundle install",
+    "ssh -T -o StrictHostKeyChecking=no git@github.com",
+    "git clone git@github.com:westarete/#{projectName}.git #{remote_path}/releases/#{releaseFolder}",
+    "if [-f #{remote_path}/current ]; then rm #{remote_path}/current; fi",
+    "ln -s #{remote_path}/releases/#{releaseFolder} #{remote_path}/current",
+    "cd #{remote_path}/releases/#{releaseFolder}/; bundle install --without production",
     "sudo service apache2 restart"
   ]
   Net::SSH.start(host, user, options) do |ssh|
