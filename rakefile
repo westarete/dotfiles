@@ -43,6 +43,7 @@ end
 desc "list all chef-ed servers and roles"
 task :list => :verifyChef do |l|
   nodeList = `cd #{ENV['WESTARETE']}/chef-repo; knife node list`.split
+  puts "#{color(nodeList.length.to_s, 'cyan')} servers"
   nodeList.each do |node|
     nodeInfo = `cd #{ENV['WESTARETE']}/chef-repo; knife node show #{node}`.split("\n")
     nodeInfo = (nodeInfo.collect! { |r| r.scan(/[a-zA-Z.0-9\-]*$|\[[a-zA-Z\-]*\]/).join }).slice(0,5)
