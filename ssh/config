@@ -1,54 +1,15 @@
 Host alexander.westarete.com
   Port 22222
 
-Host beta
-  Port 22222
-Host beta.westarete.com
+Host centos-5.ci.westarete.com
   Port 22222
 
-Host chickenpeter
-  Port 22222
-Host chickenpeter.westarete.com
-  Port 22222
-
-Host git.westarete.com
-  Port 22222
-
-Host otter
-  Port 22222
 Host otter.westarete.com
   Port 22222
 
-Host paig.dnsalias.com
-  Port 22222
-
-Host pineswamp
-  Port 22222
-Host pineswamp.westarete.com
-  Port 22222
-
-Host projects
-  Port 22222
-Host projects.westarete.com
-  Port 22222
-
-Host shiitake
-  Port 22222
 Host shiitake.westarete.com
   Port 22222
 
-Host staging
-  Port 22222
-Host staging.westarete.com
-  Port 22222
-
-Host tussey
-  Port 22222
-Host tussey.westarete.com
-  Port 22222
-
-Host underwood
-  Port 22222
 Host underwood.westarete.com
   Port 22222
 
