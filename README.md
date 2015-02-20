@@ -25,7 +25,7 @@ complex configuration file for it. Or have your coworkers do that for you. Lucky
 
 #### Install the things
 1. `brew install vim` The one that ships with OSX isn't very good. You like copying-and-pasting, right? Then install the homebrew version.
-2. `brew install the_silver_searcher` Mega-fast implementation of the ack command, used in our vim config for searching and quick-opening files.
+2. `brew install the_silver_searcher` Mega-fast implementation of the ack command, used in our vim config for searching and quick-opening files. Respects .gitignore which is cool.
 3. `git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim` Vundle, as the name suggests, is like Bundler for vim plugins.
 4. Move all config files (described below) into place.
 5. Open vim and run `: PluginInstall` to tell Vundle to install all the vim plugins.
