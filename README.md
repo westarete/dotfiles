@@ -51,7 +51,7 @@ Plugins of note:
 
 [Nerd Tree](https://github.com/scrooloose/nerdtree) Pops out a filesystem tree on the left. I don't use it much but when I do I'm glad it's there. Toggle this open/closed with `Ctrl n`.
 
-[Ctrl-P](http://github.com/ctrlpvim/ctrlp.vim) Fuzzy-match file finder. I use this most of the time that I open files. Enact it with `Ctrl p` as the name suggests.
+[Ctrl-P](http://github.com/ctrlpvim/ctrlp.vim) Fuzzy-match file finder. I use this most of the time that I open files. Enact it with `Ctrl p` as the name suggests. Pro Tip: _do not_ hit `Ctrl p` when in your home directory, or it will index your entire home directory which takes forever.
 
 [Rails.vim](https://github.com/tpope/vim-rails) Quick navigation around Rails projects. I use `:A` and `:AV` quite a bit. Even though West Arete uses a nonstandard spec directory structure, I've patched it so things mostly work.
 
@@ -60,7 +60,7 @@ Plugins of note:
 [Fugitive](https://github.com/tpope/vim-fugitive) Outstanding git interface for vim. It can do some truly amazing stuff, like stage only specific lines in a file to commit, but still really handy for just day-to-day commits and stuff too.
 
 [CTags](http://github.com/vim-scripts/ctags.vim) Indexes all the classes and methods in your code. Allows you to quickly jump to definitions. As of right now you must manually index your stuff by hitting `<Space> ct`. Once you do that, place your cursor on a class or method and h
-it `Ctrl ]` to jump to its definition. I'm open to the idea of having ctags indexed automatically if everyone else is into it too. Here's a [good intro](http://andrew.stwrt.ca/posts/vim-ctags) to learn more.
+it `Ctrl ]` to jump to its definition. I'm open to the idea of having ctags indexed automatically if everyone else is into it too. Here's a [good intro](http://blog.sensible.io/2014/05/09/supercharge-your-vim-into-ide-with-ctags.html) to learn more. You may want to add the `tags` file that ctags generates to your global .gitignore. I did.
 
 [tComment](http://github.com/vim-scripts/tComment) Quickly un/comment lines. Remember what I said about `.vimrc.themes` right?
 
