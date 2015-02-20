@@ -1,0 +1,8 @@
+" Fancy status bar
+Plugin 'bling/vim-airline'
+
+" CSV file type support
+Plugin 'chrisbra/csv.vim'
+
+" Liquid template support
+Plugin 'tpope/vim-liquid'

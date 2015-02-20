@@ -1,0 +1,98 @@
+if &compatible
+  set nocompatible
+end
+
+filetype off
+set rtp+=~/.vim/bundle/Vundle.vim/
+call vundle#begin()
+
+" Let Vundle manage Vundle
+Plugin 'gmarik/Vundle.vim'
+
+" Define bundles via Github repos
+
+" File tree browser
+Plugin 'scrooloose/nerdtree'
+
+" Defaults for vim
+Plugin 'tpope/vim-sensible'
+
+" Super fast grep-like searcher
+Plugin 'rking/ag.vim'
+
+" adds CoffeeScript support to vim
+Plugin 'kchmck/vim-coffee-script'
+
+"Full path fuzzy file, buffer, mru, tag, ... finder for Vim
+Plugin 'ctrlpvim/ctrlp.vim'
+
+" Automatically create non-existent directories
+Plugin 'pbrisbin/vim-mkdir'
+
+" Syntax checking
+Plugin 'scrooloose/syntastic'
+
+" Goodies for Bundler, best accompanied by rake.vim and/or rails.vim
+Plugin 'tpope/vim-bundler'
+
+" Automatically closes if and do statements, etc
+Plugin 'tpope/vim-endwise'
+
+" Sugar for the UNIX shell commands that need it the most
+Plugin 'tpope/vim-eunuch'
+
+" Git interface
+Plugin 'tpope/vim-fugitive'
+
+" Rails commands and shortcuts
+Plugin 'tpope/vim-rails'
+
+" Tells recent versions of vim-ruby where your Ruby installs are located
+Plugin 'tpope/vim-rbenv'
+
+" Repeat.vim remaps . in a way that plugins can tap into it
+Plugin 'tpope/vim-repeat'
+
+" Easily delete, change and add such surroundings in pairs
+Plugin 'tpope/vim-surround'
+
+" Editing and compiling Ruby within Vim
+Plugin 'vim-ruby/vim-ruby'
+
+" Jump to step definitions
+Plugin 'tpope/vim-cucumber'
+
+" Uses exuberant ctags to build the list of tags for the current file
+Plugin 'vim-scripts/ctags.vim'
+
+" Allows you to configure % to match more than just single characters
+Plugin 'vim-scripts/matchit.zip'
+
+" Comment out text that contains uncommented lines, vise-versa
+Plugin 'vim-scripts/tComment'
+
+" Navigate seamlessly between vim and tmux splits
+Plugin 'christoomey/vim-tmux-navigator'
+
+" Test runner for rspec, cucumber, etc
+Plugin 'skalnik/vim-vroom'
+
+" Allows vroom to exectue in another tmux pane
+" This is a fork that makes vimux use tmux pane IDs
+Plugin 'yunake/vimux'
+
+" Base16 colorschemes
+Plugin 'chriskempson/base16-vim'
+
+" Solarized colorscheme
+Plugin 'altercation/vim-colors-solarized'
+
+" Tomorrow colorscheme for people w/o fancy term
+Plugin 'chriskempson/vim-tomorrow-theme'
+
+if filereadable(expand("~/.vimrc.bundles.local"))
+  source ~/.vimrc.bundles.local
+endif
+
+call vundle#end()
+filetype on
