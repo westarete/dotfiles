@@ -18,6 +18,14 @@ polite conversation. Plus, if you use a Mac laptop and switch to a full-size
 non-Apple keyboard at your desk, the location of the Caps Lock key does not
 move around on you between the two keyboards.
 
+If you're going to be in the terminal all day, you might as well have something
+nice to look at. [Source Code
+Pro](https://github.com/adobe-fonts/source-code-pro) is an excellent monospaced
+typeface that won't make your eyes bleed and passes the "Illegal10O" test well.
+Personally I use the 13pt size, Light weight which is quite readable and doesn't
+have any aliasing issues, although if you have a retina screen the Extra Light
+weight looks even better.
+
 ### Vim
 Vim _can be_ very powerful, but as it ships out of the box it's basically
 terrible. The solution is to install a zillion plugins and write a long and
