@@ -32,7 +32,7 @@ I've split the vim config up into several files, here's the breakdown. (Full dis
 
 * `.vimrc` Main config file, contains the boilerplate configuration that all of us can agree upon. You _should_ skim through this because it's well commented, you _should not edit_ this file to your own personal tastes, there's a better way...
 * `.vimrc.local` Is where you put your own personal configs if you desire. If you find a config you just can't live without, send a pull request and maybe we'll add it. Likewise if you think I went totally overboard on the main .vimrc, send a pull request and we can pare it back.
-* `.vimrc.bundles` Is like the Gemfile of our vim config, which contains a boilerplate set of plugins that we can all agree upon. You _should_ read through it because I took the time to comment everything, you _should not edit_ this file.
+* `.vimrc.bundles` Is like the Gemfile of our vim config, which contains a boilerplate set of plugins that we can all agree upon. You _should_ read through it because I took the time to comment everything, you _should not edit_ this file. Likewise if you think I went too crazy on this, send a pull request and we'll move some of it out.
 * `.vimrc.bundles.local` Is where you can add your own bundles until your heart's content. If you discover a really cool bundle you can't live without, maybe we can add it to the main .vimrc.bundles file.
 * `.vimrc.themes` The prettiest vim themes require you to install a corresponding theme in your terminal. This presents a problem when tmux pairing with someone who has a _less than pimped_ terminal. I split the theme configs out into their own separate file so when someone goes "Ugh, how can you read that yellow text on a white background?!" you can quickly switch to a different theme. _Do not delete the lines in here, just comment them out/in!!_
 * `.vimrc.rails` West Arete goes rogue when it comes to the Rails spec directory structure. This file teaches Rails.vim about our unique structure so you can still quick-switch between classes and their specs. You probably won't ever need to edit or open this.
@@ -60,6 +60,8 @@ Plugins of note:
 [tComment](http://github.com/vim-scripts/tComment) Quickly un/comment lines. Remember what I said about `.vimrc.themes` right?
 
 [Syntastic](https://github.com/scrooloose/syntastic) Checks your syntax and tells you that your code is broken. Has a pretty pony in its readme.
+
+There are more, so skim through `.vimrc.bundles`
 
 ## Tmux
 
