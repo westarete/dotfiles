@@ -1,0 +1,72 @@
+let g:rails_projections = {
+\ "config/projections.json": {
+\   "command": "projections"
+\ },
+\ "app/models/*.rb": {
+\   "test": [
+\     "spec/component/models/%s_spec.rb",
+\     "spec/unit/%s_spec.rb"
+\   ]
+\ },
+\ "app/decorators/*.rb": {
+\   "test": [
+\     "spec/component/decorators/%s_spec.rb",
+\     "spec/unit/%s_spec.rb"
+\   ]
+\ },
+\ "spec/component/models/*_spec.rb": {
+\   "alternate": "app/models/%s.rb",
+\   "related": "db/schema.rb#%p"
+\ },
+\ "spec/unit/*_spec.rb": {
+\   "alternate": [
+\     "app/models/%s.rb",
+\     "app/services/%s.rb",
+\     "app/decorators/%s.rb"
+\   ],
+\   "related": "db/schema.rb#%p"
+\ },
+\ "app/services/*.rb": {
+\   "command": "service",
+\   "affinity": "model",
+\   "test": [ 
+\     "spec/services/%s_spec.rb",
+\     "spec/component/services/%s_spec.rb"
+\   ],
+\   "related": "app/models/%s.rb",
+\   "template": "class %S\n\n  def run\n  end\nend"
+\ }}
+
+let g:rails_gem_projections = {
+\ "factory_girl_rails": {
+\   "spec/factories.rb": {"command": "factory"},
+\   "spec/factories/*_factory.rb": {
+\     "command": "factory",
+\     "affinity": "model",
+\     "alternate": "app/models/%s.rb",
+\     "related": "db/schema.rb#%p",
+\     "test": [
+\       "spec/models/%s_spec.rb",
+\       "spec/component/models/%s_spec.rb"
+\       ],
+\     "template": "FactoryGirl.define do\n  factory :%s do\n  end\nend",
+\     "keywords": "factory sequence"
+\   },
+\   "spec/factories/*.rb": {
+\     "command": "factory",
+\     "affinity": "collection",
+\     "alternate": "app/models/%o.rb",
+\     "related": "db/schema.rb#%s",
+\     "test": [
+\       "spec/component/models/%o_spec.rb",
+\       "spec/models/%o_spec.rb"
+\       ],
+\     "template": "FactoryGirl.define do\n  factory :%o do\n  end\nend",
+\     "keywords": "factory sequence"
+\   },
+\  },
+\ "cucumber-rails": {
+\   "features/*.feature": {"command": "feature"},
+\   "features/step_definitions/*_steps.rb": {"command": "steps"},
+\   "features/support/*.rb": {"command": "support"}
+\ }}
