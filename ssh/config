@@ -1,16 +1,7 @@
 Host alexander.westarete.com
   Port 22222
 
-Host centos-5.ci.westarete.com
-  Port 22222
-
-Host otter.westarete.com
-  Port 22222
-
 Host shiitake.westarete.com
-  Port 22222
-
-Host underwood.westarete.com
   Port 22222
 
 Host livingwage.mit.edu
